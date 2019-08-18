@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    container_name: class_util_db
+    ports:
+        - "15432:5432"
+    environment:
+      - POSTGRES_DB=class_util

@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "askForPassword": false,
+            "connectionTimeout": 30,
+            "database": "class_util",
+            "dialect": "PostgreSQL",
+            "name": "class_util",
+            "port": 15432,
+            "server": "0.0.0.0",
+            "username": "postgres"
+        }
+    ],
+    "cSpell.words": [
+        "Textbox"
+    ]
+}
