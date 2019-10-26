@@ -8,7 +8,6 @@ use bigdecimal::BigDecimal;
 use csv::{ReaderBuilder, Trim};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
-use regex::Regex;
 use serde::{Deserialize, Serialize};
 
 const SEMESTERS: &[&str] = &["winter", "spring", "summer1", "summer2", "fall"];
@@ -40,13 +39,13 @@ struct Row {
 fn main() {
     let connection = connect();
 
-    assert_empty(&connection);
-
-    create_semesters(&connection);
-
     let arg = args()
         .nth(1)
         .expect("Provide the path to the folder of CSVs as an argument");
+
+    assert_empty(&connection);
+    create_semesters(&connection);
+    
     let path = Path::new(&arg);
     assert!(path.is_dir());
     for entry in read_dir(path).unwrap() {
@@ -116,12 +115,16 @@ fn handle_csv(conn: &PgConnection, path: &Path) {
 fn create_term(conn: &PgConnection, path: &Path) -> i32 {
     use schema::semesters::dsl::*;
 
-    let caps = Regex::new(r"^(\d+)_(\w+)$")
+    let parts = path
+        .file_stem()
         .unwrap()
-        .captures(path.file_stem().unwrap().to_str().unwrap())
-        .unwrap();
-    let year = caps.get(1).unwrap().as_str().parse::<i32>().unwrap();
-    let semester_name = caps.get(2).unwrap().as_str();
+        .to_str()
+        .unwrap()
+        .split('_')
+        .collect::<Vec<&str>>();
+
+    let year = parts[0].parse::<i32>().unwrap();
+    let semester_name = parts[1];
 
     let semester_id = semesters
         .select(id)
