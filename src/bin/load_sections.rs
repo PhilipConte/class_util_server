@@ -45,7 +45,7 @@ fn main() {
 
     assert_empty(&connection);
     create_semesters(&connection);
-    
+
     let path = Path::new(&arg);
     assert!(path.is_dir());
     for entry in read_dir(path).unwrap() {
