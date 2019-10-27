@@ -2,6 +2,7 @@
 extern crate diesel;
 
 pub mod models;
+pub mod queries;
 pub mod schema;
 
 use diesel::pg::PgConnection;

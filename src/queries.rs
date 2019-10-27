@@ -1,3 +1,40 @@
+use crate::schema::*;
+
+// use bigdecimal::BigDecimal;
+
+use diesel::helper_types;
+use diesel::prelude::*;
+use diesel::dsl::avg; // should replace with sql_function! of round
+
+
+pub type RichCourse = (
+    courses::id,
+    courses::department,
+    courses::number,
+    courses::title,
+    courses::hours,
+    courses::slug,
+    // helper_types::avg<sections::columns::gpa>,
+    // investigate sql_function
+    // schema::section::a_percent,
+    // schema::section::b_percent,
+    // schema::section::c_percent,
+    // schema::section::d_percent,
+    // schema::section::f_percent,
+    // schema::section::withdrawal_percent,
+);
+
+// type SectionsStats = (
+//     helper_types::avg<sections::gpa>,
+//     investigate sql_function
+//     schema::section::a_percent,
+//     schema::section::b_percent,
+//     schema::section::c_percent,
+//     schema::section::d_percent,
+//     schema::section::f_percent,
+//     schema::section::withdrawal_percent,
+// );
+
 // SELECT
 //   courses.department,
 //   courses.number,
@@ -17,3 +54,20 @@
 //     ON courses.id = sections.course_id
 // GROUP BY
 //   courses.id
+
+pub fn all_courses() -> helper_types::Select<courses::table, RichCourse> {
+    courses::table.select((
+        courses::id,
+        courses::department,
+        courses::number,
+        courses::title,
+        courses::hours,
+        courses::slug,
+        // avg(sections::gpa) // put combine with aggregate_sections
+    ))
+}
+
+pub fn aggregate_sections() -> helper_types::Select<sections::table, helper_types::avg<sections::gpa>> {
+    sections::table.select(avg(sections::gpa))
+}
+
